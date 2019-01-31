@@ -17,7 +17,7 @@ FROM ibmjava:8-jre
 LABEL maintainer="Arthur De Magalhaes <arthurdm@ca.ibm.com> (@arthurdm)"
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends unzip \
+    && apt-get install -y --no-install-recommends unzip inotify-tools \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /licenses/ \
     && useradd -u 1001 -r -g 0 -s /usr/sbin/nologin default

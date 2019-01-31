@@ -19,6 +19,7 @@ case "${LICENSE,,}" in
     ;;
 esac
 
+
 keystorePath="/config/configDropins/defaults/keystore.xml"
 
 if [ "$KEYSTORE_REQUIRED" == "true" ]
@@ -33,7 +34,18 @@ then
     mkdir -p $(dirname $keystorePath)
     echo $XML > $keystorePath
   fi
+
+# If the ICP CA tls.crt and tls.key exists, convert to JKS and use
+elif [ -e $publicCertPath ] && [ -e $privateKeyPath ]
+then
+  #Always generate on startup
+  /opt/ibm/helpers/runtime/gen-icp-cert.sh
+  
+  #Start inotify
+  /opt/ibm/helpers/runtime/inotify-cert.sh &
 fi
+
+
 
 
 # Pass on to the real server run
