@@ -1,4 +1,4 @@
-# (C) Copyright IBM Corporation 2018.
+# (C) Copyright IBM Corporation 2018,2019.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,6 +26,6 @@ RUN if [ ! -z $REPOSITORIES_PROPERTIES ]; then mkdir /opt/ibm/wlp/etc/ \
   && if [ ! -z $REPOSITORIES_PROPERTIES ]; then rm /opt/ibm/wlp/etc/repositories.properties; fi \
   && rm -rf /output/workarea /output/logs
 
-COPY server.xml /config/
+COPY --chown=1001:0 server.xml /config/
 
-RUN server start && server stop && rm -rf /output/resources/security/ /logs/*
+RUN server start && server stop && rm -rf /output/resources/security/ /output/messaging /logs/* $WLP_OUTPUT_DIR/.classCache && chmod -R g+rwx /opt/ibm/wlp/output/*

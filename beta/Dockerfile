@@ -22,7 +22,7 @@ RUN apt-get update \
     && useradd -u 1001 -r -g 0 -s /usr/sbin/nologin default
 
 # Install WebSphere Liberty
-ENV LIBERTY_VERSION 2018.12.0_0
+ENV LIBERTY_VERSION 2019.3.0_0
 RUN LIBERTY_URL=$(wget -q -O - https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/index.yml  | grep $LIBERTY_VERSION -A 3 | sed -n 's/\s*webProfile7:\s//p' | tr -d '\r')  \
     && echo $LIBERTY_URL \
     && wget -q $LIBERTY_URL -U UA-IBM-WebSphere-Liberty-Docker -O /tmp/wlp-beta.zip \
@@ -44,7 +44,7 @@ COPY server.xml /opt/ibm/wlp/usr/servers/defaultServer/
 # Create symlinks && set permissions for non-root user
 RUN mkdir /logs \
     && mkdir /etc/wlp \
-    && mkdir /lib.index.cache \
+    && mkdir -p /opt/ibm/wlp/usr/shared/resources/lib.index.cache \
     && mkdir -p /home/default \
     && mkdir /output \
     && chmod -t /output \
@@ -52,17 +52,18 @@ RUN mkdir /logs \
     && ln -s $WLP_OUTPUT_DIR/defaultServer /output \
     && ln -s /opt/ibm/wlp/usr/servers/defaultServer /config \
     && ln -s /opt/ibm /liberty \
+    && ln -s /opt/ibm/wlp/usr/shared/resources/lib.index.cache /lib.index.cache \
     && mkdir -p /config/configDropins/defaults \
     && chown -R 1001:0 /config \
     && chmod -R g+rw /config \
-    && chown -R 1001:0 /opt/ibm/wlp \
-    && chmod -R g+rw /opt/ibm/wlp \
+    && chown -R 1001:0 /opt/ibm/wlp/usr \
+    && chmod -R g+rw /opt/ibm/wlp/usr \
+    && chown -R 1001:0 /opt/ibm/wlp/output \
+    && chmod -R g+rw /opt/ibm/wlp/output \
     && chown -R 1001:0 /logs \
     && chmod -R g+rw /logs \
     && chown -R 1001:0 /etc/wlp \
     && chmod -R g+rw /etc/wlp \
-    && chown -R 1001:0 /lib.index.cache \
-    && chmod -R g+rw /lib.index.cache \
     && chown -R 1001:0 /home/default \
     && chmod -R g+rw /home/default
 
